@@ -1,0 +1,23 @@
+<header class="header">
+
+    <div class="logo">
+
+        <a href="/">
+            NewsWeather
+        </a>
+
+    </div>
+
+    <nav class="navigation">
+
+        {% for item in navigation %}
+
+            <a href="#{{ item.id }}">
+                {{ item.label }}
+            </a>
+
+        {% endfor %}
+
+    </nav>
+
+</header>

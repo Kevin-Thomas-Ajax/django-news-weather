@@ -1,0 +1,23 @@
+<div class="news-card">
+
+    {% if article.image %}
+        <img
+            src="{{ article.image }}"
+            alt="{{ article.title }}">
+    {% endif %}
+
+    <h3>
+        {{ article.title }}
+    </h3>
+
+    <p>
+        {{ article.summary|truncatewords:25 }}
+    </p>
+
+    <small>
+
+        {{ article.source }}
+
+    </small>
+
+</div>
