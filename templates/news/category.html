@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{ category }}
+{% endblock %}
+
+{% block content %}
+
+{% include "includes/header.html" %}
+
+<main>
+
+    <section>
+
+        <div class="section-header">
+
+            <h1>{{ category }}</h1>
+
+        </div>
+
+        <div class="news-grid">
+
+            {% for article in articles %}
+
+                {% include "includes/news_card.html" %}
+
+            {% endfor %}
+
+        </div>
+
+    </section>
+
+</main>
+
+{% endblock %}
