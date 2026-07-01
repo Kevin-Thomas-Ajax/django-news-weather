@@ -16,18 +16,40 @@ def home(request):
         {"label": "Entertainment", "id": "entertainment"},
     ]
 
+    # Fetch each category only once
+    business_news = news_service.get_category("business")
+    sports_news = news_service.get_category("sports")
+    technology_news = news_service.get_category("technology")
+    health_news = news_service.get_category("health")
+    entertainment_news = news_service.get_category("entertainment")
+
+    # Use the first article from each category for the hero slider
+    latest_news = []
+
+    for articles in [
+        business_news,
+        sports_news,
+        technology_news,
+        health_news,
+        entertainment_news,
+    ]:
+        if articles:
+            latest_news.append(articles[0])
+
     context = {
         "navigation": navigation,
-        "latest_news": news_service.get_featured(),
-        "business_news": news_service.get_category("business"),
-        "sports_news": news_service.get_category("sports"),
-        "technology_news": news_service.get_category("technology"),
-        "health_news": news_service.get_category("health"),
-        "entertainment_news": news_service.get_category("entertainment"),
+
+        "latest_news": latest_news,
+
+        "business_news": business_news,
+        "sports_news": sports_news,
+        "technology_news": technology_news,
+        "health_news": health_news,
+        "entertainment_news": entertainment_news,
     }
 
     return render(
         request,
         "core/home.html",
-        context
+        context,
     )
