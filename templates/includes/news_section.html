@@ -4,7 +4,9 @@
 
         <h2>{{ section_title }}</h2>
 
-        <a href="#">View More →</a>
+        <a href="{% url 'news:category' section_id %}">
+            View More →
+        </a>
 
     </div>
 

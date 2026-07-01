@@ -1,4 +1,7 @@
-<div class="news-card">
+<a
+    href="{{ article.url }}"
+    target="_blank"
+    class="news-card">
 
     {% if article.image %}
         <img
@@ -32,13 +35,4 @@
 
     </div>
 
-    <a
-        href="{{ article.url }}"
-        target="_blank"
-        class="read-more">
-
-        Read More →
-
-    </a>
-
-</div>
+</a>
