@@ -4,20 +4,41 @@
         <img
             src="{{ article.image }}"
             alt="{{ article.title }}">
+    {% else %}
+        <div class="news-card-image-placeholder">
+            No Image
+        </div>
     {% endif %}
 
-    <h3>
-        {{ article.title }}
-    </h3>
+    <div class="news-card-content">
 
-    <p>
-        {{ article.summary|truncatewords:25 }}
-    </p>
+        <h3>{{ article.title }}</h3>
 
-    <small>
+        <p>
+            {{ article.summary|truncatewords:25 }}
+        </p>
 
-        {{ article.source }}
+    </div>
 
-    </small>
+    <div class="news-card-footer">
+
+        <span class="news-source">
+            {{ article.source }}
+        </span>
+
+        <span class="news-date">
+            {{ article.published_at|date:"d M Y" }}
+        </span>
+
+    </div>
+
+    <a
+        href="{{ article.url }}"
+        target="_blank"
+        class="read-more">
+
+        Read More →
+
+    </a>
 
 </div>

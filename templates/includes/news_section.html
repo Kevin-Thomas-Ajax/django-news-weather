@@ -2,13 +2,9 @@
 
     <div class="section-header">
 
-        <h2>
-            {{ section_title }}
-        </h2>
+        <h2>{{ section_title }}</h2>
 
-        <a href="#">
-            View More →
-        </a>
+        <a href="#">View More →</a>
 
     </div>
 
@@ -17,10 +13,6 @@
         {% for article in articles %}
 
             {% include "includes/news_card.html" %}
-
-        {% empty %}
-
-            <p>No articles found.</p>
 
         {% endfor %}
 
