@@ -18,7 +18,7 @@ def home(request):
 
     context = {
         "navigation": navigation,
-
+        "latest_news": news_service.get_featured(),
         "business_news": news_service.get_category("business"),
         "sports_news": news_service.get_category("sports"),
         "technology_news": news_service.get_category("technology"),

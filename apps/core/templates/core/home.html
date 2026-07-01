@@ -10,6 +10,8 @@ Home
 
     <main>
 
+        {% include "includes/hero_slider.html" with articles=latest_news %}
+
         {% include "includes/news_section.html" with section_title="Business" section_id="business" articles=business_news %}
 
         {% include "includes/news_section.html" with section_title="Sports" section_id="sports" articles=sports_news %}
