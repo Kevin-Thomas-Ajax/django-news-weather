@@ -1,23 +1,35 @@
 <header class="header">
 
-    <div class="logo">
+    <div class="header-left">
 
-        <a href="/">
-            NewsWeather
-        </a>
+        <div class="logo">
+            <a href="/">
+                📰 NewsWeather
+            </a>
+        </div>
 
     </div>
 
-    <nav class="navigation">
+    <div class="header-center">
 
-        {% for item in navigation %}
+        <nav class="navigation">
 
-            <a href="#{{ item.id }}">
-                {{ item.label }}
-            </a>
+            {% for item in navigation %}
 
-        {% endfor %}
+                <a href="#{{ item.id }}">
+                    {{ item.label }}
+                </a>
 
-    </nav>
+            {% endfor %}
+
+        </nav>
+
+    </div>
+
+    <div class="header-right">
+
+        <!-- Search goes here later -->
+
+    </div>
 
 </header>
