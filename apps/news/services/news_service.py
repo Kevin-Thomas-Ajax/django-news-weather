@@ -90,24 +90,3 @@ class NewsService:
         )
 
         return self._fetch_articles(query)
-
-    def get_featured(self):
-
-        featured = []
-
-        categories = [
-            "business",
-            "sports",
-            "technology",
-            "health",
-            "entertainment",
-        ]
-
-        for category in categories:
-
-            articles = self.get_category(category, limit=1)
-
-            if articles:
-                featured.extend(articles)
-
-        return featured
