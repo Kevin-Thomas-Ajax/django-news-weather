@@ -1,0 +1,43 @@
+<section class="hero-slider">
+
+    <div class="swiper heroSwiper">
+
+        <div class="swiper-wrapper">
+
+            {% for article in articles %}
+
+                <div class="swiper-slide">
+
+                    <a href="{{ article.url }}" target="_blank">
+
+                        {% if article.image %}
+
+                            <img
+                                src="{{ article.image }}"
+                                alt="{{ article.title }}">
+
+                        {% endif %}
+
+                        <div class="slide-overlay">
+
+                            <h2>{{ article.title }}</h2>
+
+                        </div>
+
+                    </a>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+        <div class="swiper-button-prev"></div>
+
+        <div class="swiper-button-next"></div>
+
+        <div class="swiper-pagination"></div>
+
+    </div>
+
+</section>
