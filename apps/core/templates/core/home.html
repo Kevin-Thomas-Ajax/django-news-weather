@@ -8,6 +8,18 @@ Home
 
     {% include "includes/header.html" %}
 
-    {% include "includes/news_section.html" with section_title="Business" section_id="business" articles=business_news %}
+    <main>
+
+        {% include "includes/news_section.html" with section_title="Business" section_id="business" articles=business_news %}
+
+        {% include "includes/news_section.html" with section_title="Sports" section_id="sports" articles=sports_news %}
+
+        {% include "includes/news_section.html" with section_title="Technology" section_id="technology" articles=technology_news %}
+
+        {% include "includes/news_section.html" with section_title="Health" section_id="health" articles=health_news %}
+
+        {% include "includes/news_section.html" with section_title="Entertainment" section_id="entertainment" articles=entertainment_news %}
+
+    </main>
 
 {% endblock %}
