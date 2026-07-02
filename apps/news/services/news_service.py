@@ -1,7 +1,4 @@
-from eventregistry import (
-    QueryArticles,
-    RequestArticlesInfo,
-)
+from django.core.cache import cache
 
 from apps.news.constants import (
     CATEGORY_MAP,
@@ -10,45 +7,54 @@ from apps.news.constants import (
 
 from apps.news.exceptions import NewsServiceError
 
-from .client import EventRegistryClient
-from django.core.cache import cache
+from .client import GuardianClient
+
 
 class NewsService:
 
     def __init__(self):
-        self.er = EventRegistryClient().client
+        self.client = GuardianClient()
 
     def _normalize_article(self, article):
-        """
-        Convert Event Registry article into
-        our application's standard format.
-        """
+        fields = article.get("fields", {})
 
         return {
-            "title": article.get("title", ""),
-            "summary": article.get("body", ""),
-            "image": article.get("image"),
-            "url": article.get("url"),
-            "source": article.get("source", {}).get("title", "Unknown"),
-            "published_at": article.get("dateTime"),
+            "title": article.get("webTitle"),
+            "summary": fields.get("trailText", ""),
+            "image": fields.get("thumbnail"),
+            "url": article.get("webUrl"),
+            "source": "The Guardian",
+            "published_at": article.get("webPublicationDate"),
         }
 
-    def _fetch_articles(self, query):
-        """
-        Execute an Event Registry query and
-        return normalized articles.
-        """
+    def get_latest(
+        self,
+        limit=5,
+    ):
+        cache_key = f"latest:{limit}"
+        cached = cache.get(cache_key)
+        if cached:
+            return cached
+        articles = self._fetch(
+            page_size=limit,
+            order_by="newest",
+        )
+        cache.set(
+            cache_key,
+            articles,
+            timeout=300,
+        )
+        return articles
 
+    def _fetch(self, **params):
         try:
-            response = self.er.execQuery(query)
-
-            articles = response.get("articles", {}).get("results", [])
-
+            response = self.client.request(
+                **params
+            )
             return [
                 self._normalize_article(article)
-                for article in articles
+                for article in response["response"]["results"]
             ]
-
         except Exception as exc:
             raise NewsServiceError(
                 "Unable to fetch articles."
@@ -58,79 +64,47 @@ class NewsService:
             self,
             category,
             limit=DEFAULT_ARTICLE_LIMIT,
-            force_refresh=False,
     ):
         category = category.lower()
-
         if category not in CATEGORY_MAP:
-            raise ValueError(f"Unknown category: {category}")
-
-        category_name = CATEGORY_MAP[category]
-
-        category_uri = self.er.getCategoryUri(category_name)
-
-        query = QueryArticles(
-            categoryUri=category_uri
+            raise ValueError(
+                f"Unknown category: {category}"
+            )
+        cache_key = f"{category}:{limit}"
+        cached = cache.get(cache_key)
+        if cached:
+            return cached
+        articles = self._fetch(
+            section=CATEGORY_MAP[category],
+            page_size=limit,
+            order_by="newest",
         )
-
-        query.setRequestedResult(
-            RequestArticlesInfo(count=limit)
-        )
-
-        cache_key = f"news:{category}:{limit}"
-
-        if not force_refresh:
-
-            cached = cache.get(cache_key)
-
-            if cached is not None:
-                print(f"Cache HIT -> {category}")
-                return cached
-
-        print(f"Cache MISS -> {category}")
-
-        articles = self._fetch_articles(query)
 
         cache.set(
             cache_key,
             articles,
-            timeout=300,  # 5 minutes
+            timeout=300,
         )
-
         return articles
 
-    def search(self, keyword, limit=20):
-        """
-        Search articles by keyword.
-        """
-
-        query = QueryArticles(
-            keywords=keyword
+    def search(
+            self,
+            keyword,
+            limit=20,
+    ):
+        return self._fetch(
+            q=keyword,
+            page_size=limit,
         )
-
-        query.setRequestedResult(
-            RequestArticlesInfo(
-                count=limit
-            )
-        )
-
-        return self._fetch_articles(query)
 
     def refresh_cache(self):
+        categories = CATEGORY_MAP.keys()
 
-        categories = [
-            "business",
-            "sports",
-            "technology",
-            "health",
-            "entertainment",
-        ]
+        # Refresh latest news
+        cache.delete("latest:5")
+        self.get_latest()
 
+        # Refresh each category
         for category in categories:
-            print(f"Refreshing {category}")
-
-            self.get_category(
-                category,
-                limit=4,
-                force_refresh=True,
-            )
+            cache.delete(f"{category}:{DEFAULT_ARTICLE_LIMIT}")
+            self.get_category(category)

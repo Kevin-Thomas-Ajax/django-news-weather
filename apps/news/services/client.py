@@ -1,17 +1,27 @@
+import requests
+
 from django.conf import settings
-from eventregistry import EventRegistry
 
 
-class EventRegistryClient:
-    """
-    Wrapper around the Event Registry SDK.
-    """
+class GuardianClient:
 
-    def __init__(self):
-        self._client = EventRegistry(
-            apiKey=settings.EVENT_REGISTRY_API_KEY
+    BASE_URL = "https://content.guardianapis.com/search"
+
+    def request(self, **params):
+
+        params["api-key"] = settings.GUARDIAN_API_KEY
+
+        params.setdefault(
+            "show-fields",
+            "thumbnail,trailText"
         )
 
-    @property
-    def client(self):
-        return self._client
+        response = requests.get(
+            self.BASE_URL,
+            params=params,
+            timeout=10,
+        )
+
+        response.raise_for_status()
+
+        return response.json()
