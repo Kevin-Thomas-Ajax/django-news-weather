@@ -11,7 +11,7 @@ from apps.news.constants import (
 from apps.news.exceptions import NewsServiceError
 
 from .client import EventRegistryClient
-
+from django.core.cache import cache
 
 class NewsService:
 
@@ -54,7 +54,12 @@ class NewsService:
                 "Unable to fetch articles."
             ) from exc
 
-    def get_category(self, category, limit=DEFAULT_ARTICLE_LIMIT):
+    def get_category(
+            self,
+            category,
+            limit=DEFAULT_ARTICLE_LIMIT,
+            force_refresh=False,
+    ):
         category = category.lower()
 
         if category not in CATEGORY_MAP:
@@ -72,7 +77,27 @@ class NewsService:
             RequestArticlesInfo(count=limit)
         )
 
-        return self._fetch_articles(query)
+        cache_key = f"news:{category}:{limit}"
+
+        if not force_refresh:
+
+            cached = cache.get(cache_key)
+
+            if cached is not None:
+                print(f"Cache HIT -> {category}")
+                return cached
+
+        print(f"Cache MISS -> {category}")
+
+        articles = self._fetch_articles(query)
+
+        cache.set(
+            cache_key,
+            articles,
+            timeout=300,  # 5 minutes
+        )
+
+        return articles
 
     def search(self, keyword, limit=20):
         """
@@ -90,3 +115,22 @@ class NewsService:
         )
 
         return self._fetch_articles(query)
+
+    def refresh_cache(self):
+
+        categories = [
+            "business",
+            "sports",
+            "technology",
+            "health",
+            "entertainment",
+        ]
+
+        for category in categories:
+            print(f"Refreshing {category}")
+
+            self.get_category(
+                category,
+                limit=4,
+                force_refresh=True,
+            )

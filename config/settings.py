@@ -134,3 +134,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / ".env")
 
 EVENT_REGISTRY_API_KEY = os.getenv("EVENT_REGISTRY_API_KEY")
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "news-weather-cache",
+    }
+}
