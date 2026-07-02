@@ -134,6 +134,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / ".env")
 
 EVENT_REGISTRY_API_KEY = os.getenv("EVENT_REGISTRY_API_KEY")
+GUARDIAN_API_KEY = os.getenv("GUARDIAN_API_KEY")
 
 CACHES = {
     "default": {

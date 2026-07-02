@@ -37,15 +37,31 @@ def home(request):
             latest_news.append(articles[0])
 
     context = {
+
         "navigation": navigation,
 
-        "latest_news": latest_news,
-
-        "business_news": business_news,
-        "sports_news": sports_news,
-        "technology_news": technology_news,
-        "health_news": health_news,
-        "entertainment_news": entertainment_news,
+        "latest_news":
+            news_service.get_latest(),
+        "business_news":
+            news_service.get_category(
+                "business"
+            ),
+        "sports_news":
+            news_service.get_category(
+                "sports"
+            ),
+        "technology_news":
+            news_service.get_category(
+                "technology"
+            ),
+        "health_news":
+            news_service.get_category(
+                "health"
+            ),
+        "entertainment_news":
+            news_service.get_category(
+                "entertainment"
+            ),
     }
 
     return render(
