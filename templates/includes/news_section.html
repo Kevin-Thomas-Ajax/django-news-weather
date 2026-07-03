@@ -10,14 +10,10 @@
 
     </div>
 
-    <div class="news-row">
+<div id="{{ section_id }}-container">
 
-        {% for article in articles %}
+    {% include "includes/skeleton_cards.html" %}
 
-            {% include "includes/news_card.html" %}
-
-        {% endfor %}
-
-    </div>
+</div>
 
 </section>
