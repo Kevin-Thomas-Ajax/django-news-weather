@@ -10,4 +10,10 @@ urlpatterns = [
         views.category,
         name="category",
     ),
+
+    path(
+        "lazy/<slug:category>/",
+        views.lazy_category,
+        name="lazy_category",
+    ),
 ]

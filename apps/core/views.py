@@ -40,28 +40,8 @@ def home(request):
 
         "navigation": navigation,
 
-        "latest_news":
-            news_service.get_latest(),
-        "business_news":
-            news_service.get_category(
-                "business"
-            ),
-        "sports_news":
-            news_service.get_category(
-                "sports"
-            ),
-        "technology_news":
-            news_service.get_category(
-                "technology"
-            ),
-        "health_news":
-            news_service.get_category(
-                "health"
-            ),
-        "entertainment_news":
-            news_service.get_category(
-                "entertainment"
-            ),
+        "latest_news": news_service.get_latest(),
+
     }
 
     return render(
